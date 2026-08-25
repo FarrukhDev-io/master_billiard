@@ -7,18 +7,17 @@ describe('App Integration tests', () => {
     localStorage.clear();
   });
 
-  it('renders table list and initial status correctly', () => {
+  it('renders table list and 5 tables on the main screen', () => {
     render(<App />);
 
     expect(screen.getByText(/Master Billiard/i)).toBeDefined();
     expect(screen.getByText('1-Stol (Bilyard)')).toBeDefined();
     expect(screen.getByText('4-Stol (Bilyard)')).toBeDefined();
     expect(screen.getByText('Stol Tennisi')).toBeDefined();
-    expect(screen.getByText(/Bugungi tushum/i)).toBeDefined();
-    expect(screen.getByText("0 so'm")).toBeDefined();
+    expect(screen.getByText(/Barcha stollar bo'sh/i)).toBeDefined();
   });
 
-  it('allows starting a table and stops it with checkout flow', () => {
+  it('allows starting a table and stops it with checkout flow and checks history tab', () => {
     render(<App />);
 
     // 1-stol bo'sh holatda
@@ -47,24 +46,29 @@ describe('App Integration tests', () => {
     const renewedStartButtons = screen.getAllByRole('button', { name: /Boshlash/i });
     expect(renewedStartButtons.length).toBe(5);
 
-    // Tarixda yozuv paydo bo'ldi
+    // Kassa / Tarix sahifasiga o'tish
+    const historyTabButton = screen.getByRole('button', { name: /Kassa \/ Tarix/i });
+    fireEvent.click(historyTabButton);
+
+    // Tarix sahifasida hisobot va yozuv ko'rinadi
+    expect(screen.getByText(/Bugungi tushum/i)).toBeDefined();
     expect(screen.getByText(/Sessiyalar Tarixi/i)).toBeDefined();
   });
 
-  it('allows opening settings modal and changing prices', () => {
+  it('allows navigating to settings page and changing prices', () => {
     render(<App />);
 
-    // Sozlamalar tugmasini bosish
-    const settingsButton = screen.getByLabelText('Sozlamalar');
-    fireEvent.click(settingsButton);
+    // Sozlamalar tabini bosish
+    const settingsTabButton = screen.getAllByRole('button', { name: /Sozlamalar/i })[0];
+    fireEvent.click(settingsTabButton);
 
-    // Sozlamalar modali ochildi
-    expect(screen.getByText('Sozlamalar')).toBeDefined();
+    // Sozlamalar sahifasi ochildi
+    expect(screen.getByText('Klub Sozlamalari')).toBeDefined();
     expect(screen.getByText(/Bilyard soatlik narxi/i)).toBeDefined();
     expect(screen.getByText(/Tennis soatlik narxi/i)).toBeDefined();
 
     // Saqlash tugmasini bosish
-    const saveButton = screen.getByRole('button', { name: /Saqlash/i });
+    const saveButton = screen.getByRole('button', { name: /Sozlamalarni Saqlash/i });
     fireEvent.click(saveButton);
   });
 });
