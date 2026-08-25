@@ -1,7 +1,5 @@
 /**
  * Ma'lumotlarni xavfsiz saqlash va olish uchun Storage abstraksiyasi (Service layer)
- * To'g'ridan-to'g'ri localStorage bilan ishlash o'rniga barcha amallar shu orqali bajariladi.
- * Kelajakda backend API ga osonlik bilan almashtirish mumkin.
  */
 
 import type { Table, CompletedSession, ClubSettings } from '../types';
@@ -64,12 +62,12 @@ export const DEFAULT_INITIAL_TABLES: Table[] = [
 ];
 
 /**
- * Boshlang'ich klub sozlamalari
+ * Boshlang'ich klub sozlamalari (Bilyard: 40 000 so'm/soat, Tennis: 20 000 so'm/soat)
  */
 export const DEFAULT_SETTINGS: ClubSettings = {
-  billiardHourlyRate: 50000, // 50 000 so'm / soat
-  tennisHourlyRate: 35000,   // 35 000 so'm / soat
-  roundingMinutes: 10,       // 10 daqiqagacha yaxlitlash
+  billiardHourlyRate: 40000, // 40 000 so'm / soat
+  tennisHourlyRate: 20000,   // 20 000 so'm / soat
+  roundingMinutes: 1,        // 1 daqiqalik (har soniyada yangilanuvchi aniq hisob)
   currency: "so'm",
 };
 

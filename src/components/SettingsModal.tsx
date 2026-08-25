@@ -12,10 +12,11 @@ interface SettingsModalProps {
 }
 
 const ROUNDING_OPTIONS: { label: string; value: RoundingStep }[] = [
-  { label: '5 daq', value: 5 },
+  { label: '1 daq (Aniq hisob)', value: 1 },
+  { label: '5 daqiqagacha', value: 5 },
   { label: '10 daq (standart)', value: 10 },
-  { label: '15 daq', value: 15 },
-  { label: '30 daq', value: 30 },
+  { label: '15 daqiqagacha', value: 15 },
+  { label: '30 daqiqagacha', value: 30 },
 ];
 
 /**
@@ -51,9 +52,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const handleResetToDefaults = () => {
     onReset();
-    setBilliardRate(50000);
-    setTennisRate(35000);
-    setRounding(10);
+    setBilliardRate(40000);
+    setTennisRate(20000);
+    setRounding(1);
   };
 
   return (
@@ -94,14 +95,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-white font-mono font-bold text-base focus:outline-none focus:border-emerald-500"
             />
             <div className="flex gap-1.5 mt-1.5">
-              {[40000, 50000, 60000, 80000].map((val) => (
+              {[30000, 40000, 50000, 60000].map((val) => (
                 <button
                   key={val}
                   type="button"
                   onClick={() => setBilliardRate(val)}
                   className={`text-[10px] py-1 px-2 rounded font-medium border transition-colors cursor-pointer ${
                     billiardRate === val
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 font-bold'
                       : 'bg-slate-800 text-slate-400 border-slate-700'
                   }`}
                 >
@@ -122,17 +123,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               step="1000"
               value={tennisRate}
               onChange={(e) => setTennisRate(Math.max(0, Number(e.target.value)))}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-white font-mono font-bold text-base focus:outline-none focus:border-emerald-500"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-white font-mono font-bold text-base focus:outline-none focus:border-sky-500"
             />
             <div className="flex gap-1.5 mt-1.5">
-              {[25000, 35000, 40000, 50000].map((val) => (
+              {[15000, 20000, 25000, 30000].map((val) => (
                 <button
                   key={val}
                   type="button"
                   onClick={() => setTennisRate(val)}
                   className={`text-[10px] py-1 px-2 rounded font-medium border transition-colors cursor-pointer ${
                     tennisRate === val
-                      ? 'bg-sky-500/20 text-sky-300 border-sky-500/50'
+                      ? 'bg-sky-500/20 text-sky-300 border-sky-500/50 font-bold'
                       : 'bg-slate-800 text-slate-400 border-slate-700'
                   }`}
                 >
@@ -147,7 +148,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
               ⏱ Yaxlitlash qadami
             </label>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               {ROUNDING_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
@@ -160,7 +161,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   }`}
                 >
                   <span>{opt.label}</span>
-                  {rounding === opt.value && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                  {rounding === opt.value && <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1" />}
                 </button>
               ))}
             </div>
@@ -187,7 +188,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               className="w-full py-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
-              Boshlang'ich holatga qaytarish
+              Boshlang'ich holatga qaytarish (40k / 20k)
             </button>
           </div>
         </form>

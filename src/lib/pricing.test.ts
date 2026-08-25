@@ -1,14 +1,27 @@
 import { describe, it, expect } from 'vitest';
-import { roundUpToMinutes, getHourlyRate, calculatePrice, calculateSessionDetails } from './pricing';
+import { roundUpToMinutes, getHourlyRate, calculatePrice, calculateLivePrice, calculateSessionDetails } from './pricing';
 import type { ClubSettings } from '../types';
 
 describe('Pricing calculations', () => {
   const mockSettings: ClubSettings = {
-    billiardHourlyRate: 60000,
-    tennisHourlyRate: 40000,
-    roundingMinutes: 10,
+    billiardHourlyRate: 40000,
+    tennisHourlyRate: 20000,
+    roundingMinutes: 1,
     currency: "so'm",
   };
+
+  describe('calculateLivePrice', () => {
+    it('calculates live price second by second', () => {
+      // 40 000 so'm / soat = ~11.11 so'm / sek
+      // 3600 sek (1 soat) -> 40 000 so'm
+      expect(calculateLivePrice(3600, 40000)).toBe(40000);
+      // 1800 sek (30 daq) -> 20 000 so'm
+      expect(calculateLivePrice(1800, 40000)).toBe(20000);
+      // 90 sek (1.5 daq) -> 1000 so'm
+      expect(calculateLivePrice(90, 40000)).toBe(1000);
+      expect(calculateLivePrice(0, 40000)).toBe(0);
+    });
+  });
 
   describe('roundUpToMinutes', () => {
     it('returns 0 for 0 or negative seconds', () => {
@@ -34,37 +47,29 @@ describe('Pricing calculations', () => {
 
   describe('getHourlyRate', () => {
     it('returns correct rate for table types', () => {
-      expect(getHourlyRate('billiard', mockSettings)).toBe(60000);
-      expect(getHourlyRate('tennis', mockSettings)).toBe(40000);
+      expect(getHourlyRate('billiard', mockSettings)).toBe(40000);
+      expect(getHourlyRate('tennis', mockSettings)).toBe(20000);
     });
   });
 
   describe('calculatePrice', () => {
     it('returns 0 price for 0 duration', () => {
-      const res = calculatePrice(0, 60000, 10);
+      const res = calculatePrice(0, 40000, 10);
       expect(res.roundedMinutes).toBe(0);
       expect(res.price).toBe(0);
     });
 
-    it('calculates price correctly with 10 min rounding (12 minutes played at 60k/h)', () => {
-      // 12 min = 720 seconds -> rounds up to 20 min -> (20 * 60,000) / 60 = 20,000 so'm
-      const res = calculatePrice(720, 60000, 10);
+    it('calculates price correctly with 10 min rounding (12 minutes played at 40k/h)', () => {
+      // 12 min = 720 seconds -> rounds up to 20 min -> (20 * 40,000) / 60 = 13,333 so'm
+      const res = calculatePrice(720, 40000, 10);
       expect(res.roundedMinutes).toBe(20);
-      expect(res.price).toBe(20000);
+      expect(res.price).toBe(13333);
     });
 
-    it('calculates price correctly with 5 min rounding (12 minutes played at 60k/h)', () => {
-      // 12 min = 720 seconds -> rounds up to 15 min -> (15 * 60,000) / 60 = 15,000 so'm
-      const res = calculatePrice(720, 60000, 5);
-      expect(res.roundedMinutes).toBe(15);
-      expect(res.price).toBe(15000);
-    });
-
-    it('calculates 1 hour exactly', () => {
-      // 3600 seconds -> 60 min -> 60,000 so'm
-      const res = calculatePrice(3600, 60000, 10);
-      expect(res.roundedMinutes).toBe(60);
-      expect(res.price).toBe(60000);
+    it('calculates price correctly with 1 min exact setting (12 minutes played at 40k/h)', () => {
+      const res = calculatePrice(720, 40000, 1);
+      expect(res.roundedMinutes).toBe(12);
+      expect(res.price).toBe(8000);
     });
   });
 
@@ -72,13 +77,14 @@ describe('Pricing calculations', () => {
     it('computes full details accurately', () => {
       const start = 1000000;
       const end = start + 3600 * 1000; // 1 hour
-      const details = calculateSessionDetails(start, end, 60000, 10);
+      const details = calculateSessionDetails(start, end, 40000, 10);
 
       expect(details.durationSeconds).toBe(3600);
       expect(details.durationFormatted).toBe('01:00:00');
       expect(details.roundedMinutes).toBe(60);
-      expect(details.totalPrice).toBe(60000);
-      expect(details.totalPriceFormatted).toBe("60 000 so'm");
+      expect(details.totalPrice).toBe(40000);
+      expect(details.totalPriceFormatted).toBe("40 000 so'm");
+      expect(details.livePrice).toBe(40000);
     });
   });
 });

@@ -14,7 +14,7 @@ interface TableCardProps {
 
 /**
  * Stollar Kartochkasi (Table Card)
- * Bo'sh (Available) va Band (Busy & Active) holatlari
+ * Pul har soniyada real vaqtda yangilanadi
  */
 export const TableCard: React.FC<TableCardProps> = ({
   table,
@@ -96,7 +96,7 @@ export const TableCard: React.FC<TableCardProps> = ({
           )}
         </div>
 
-        {/* Markaziy qism */}
+        {/* Markaziy qism: Taymer va Har soniyada yangilanuvchi pul */}
         {isBusy && calculation && table.currentSession ? (
           <div className="my-2 p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 text-center">
             {/* Katta o'qiladigan taymer */}
@@ -104,18 +104,20 @@ export const TableCard: React.FC<TableCardProps> = ({
               {formatDuration(calculation.durationSeconds)}
             </div>
 
-            {/* Summa va boshlangan vaqt */}
+            {/* Har soniya yangilanuvchi pul va boshlangan vaqt */}
             <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-xs">
-              <span className="text-slate-400">
+              <span className="text-slate-400 font-mono">
                 {formatTime(table.currentSession.startTime)} dan
               </span>
-              <span
-                className={`font-mono font-bold text-sm sm:text-base ${
-                  isTennis ? 'text-sky-300' : 'text-emerald-400'
-                }`}
-              >
-                {formatMoney(calculation.totalPrice)}
-              </span>
+              <div className="text-right">
+                <span
+                  className={`font-mono font-black text-sm sm:text-base ${
+                    isTennis ? 'text-sky-300' : 'text-emerald-400'
+                  }`}
+                >
+                  {formatMoney(calculation.livePrice)}
+                </span>
+              </div>
             </div>
           </div>
         ) : (

@@ -1,13 +1,12 @@
 /**
  * Narx va vaqt hisob-kitoblari uchun sof (pure) funksiyalar
- * Hech qanday side-effect'siz va oson testlanadigan logikalar
  */
 
 import type { ClubSettings, TableType, SessionCalculation } from '../types';
 import { formatDuration, formatMoney } from './format';
 
 /**
- * Berilgan soniyani belgilangan qadam (5, 10, 15, 30 daqiqa) bo'yicha yuqoriga yaxlitlaydi
+ * Berilgan soniyani belgilangan qadam (1, 5, 10, 15, 30 daqiqa) bo'yicha yuqoriga yaxlitlaydi
  * @param durationSeconds Sessiya davomiyligi (soniyalarda)
  * @param roundingStep Yaxlitlash qadami (daqiqalarda)
  * @returns Yaxlitlangan daqiqalar soni
@@ -34,31 +33,52 @@ export function getHourlyRate(tableType: TableType, settings: ClubSettings): num
 }
 
 /**
+ * Soniyama-soniya real vaqtda yig'ilayotgan aniq pulni hisoblaydi
+ * @param durationSeconds O'tgan soniyalar
+ * @param hourlyRate Soatlik narx (so'm)
+ * @returns Aniq hisoblangan pul summasi
+ */
+export function calculateLivePrice(durationSeconds: number, hourlyRate: number): number {
+  if (durationSeconds <= 0) return 0;
+  return Math.round((durationSeconds * hourlyRate) / 3600);
+}
+
+/**
  * Sessiya uchun umumiy to'lov miqdorini hisoblaydi
- * Formula: (Yaxlitlangan daqiqa * Soatlik narx) / 60
  * @param durationSeconds Sessiya davomiyligi (soniya)
  * @param hourlyRate Soatlik narx (so'm)
  * @param roundingStep Yaxlitlash qadami (daqiqa)
- * @returns { roundedMinutes, price }
+ * @returns { roundedMinutes, price, livePrice }
  */
 export function calculatePrice(
   durationSeconds: number,
   hourlyRate: number,
   roundingStep: number
-): { roundedMinutes: number; price: number } {
+): { roundedMinutes: number; price: number; livePrice: number } {
   if (durationSeconds <= 0) {
-    return { roundedMinutes: 0, price: 0 };
+    return { roundedMinutes: 0, price: 0, livePrice: 0 };
+  }
+
+  const livePrice = calculateLivePrice(durationSeconds, hourlyRate);
+
+  if (roundingStep <= 1) {
+    // 1 daqiqa yoki sekundma-sekund hisob
+    const roundedMinutes = Math.max(1, Math.ceil(durationSeconds / 60));
+    return {
+      roundedMinutes,
+      price: livePrice,
+      livePrice,
+    };
   }
 
   const roundedMinutes = roundUpToMinutes(durationSeconds, roundingStep);
-  // Narx = (daqiqalar * soatlik narx) / 60
   const rawPrice = (roundedMinutes * hourlyRate) / 60;
-  // 100 so'mgacha yaxlitlab toza summaga keltirish
   const price = Math.round(rawPrice);
 
   return {
     roundedMinutes,
     price,
+    livePrice,
   };
 }
 
@@ -77,12 +97,13 @@ export function calculateSessionDetails(
   roundingStep: number
 ): SessionCalculation {
   const durationSeconds = Math.max(0, Math.floor((endTime - startTime) / 1000));
-  const { roundedMinutes, price } = calculatePrice(durationSeconds, hourlyRate, roundingStep);
+  const { roundedMinutes, price, livePrice } = calculatePrice(durationSeconds, hourlyRate, roundingStep);
 
   return {
     durationSeconds,
     durationFormatted: formatDuration(durationSeconds),
     roundedMinutes,
+    livePrice,
     totalPrice: price,
     totalPriceFormatted: formatMoney(price),
     hourlyRate,

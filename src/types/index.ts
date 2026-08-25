@@ -9,7 +9,7 @@ export type TableStatus = 'available' | 'busy';
 export interface ActiveSession {
   sessionId: string;
   startTime: number; // Unix timestamp in milliseconds
-  hourlyRate: number; // Snapshot of hourly rate when session started (or updated)
+  hourlyRate: number; // Snapshot of hourly rate when session started
 }
 
 export interface Table {
@@ -36,12 +36,12 @@ export interface CompletedSession {
   dateKey: string; // "YYYY-MM-DD" for filtering today's sessions
 }
 
-export type RoundingStep = 5 | 10 | 15 | 30;
+export type RoundingStep = 1 | 5 | 10 | 15 | 30;
 
 export interface ClubSettings {
-  billiardHourlyRate: number; // Soatlik narx (bilyard)
-  tennisHourlyRate: number;   // Soatlik narx (stol tennisi)
-  roundingMinutes: RoundingStep; // Yaxlitlash qadami (daqiqa)
+  billiardHourlyRate: number; // Bilyard soatlik narxi (40 000 so'm)
+  tennisHourlyRate: number;   // Stol tennisi soatlik narxi (20 000 so'm)
+  roundingMinutes: RoundingStep; // Yaxlitlash qadami (1 = sekundma-sekund aniq hisob)
   currency: string;           // "so'm"
 }
 
@@ -49,6 +49,7 @@ export interface SessionCalculation {
   durationSeconds: number;
   durationFormatted: string;
   roundedMinutes: number;
+  livePrice: number; // Har soniyada o'suvchi aniq pul
   totalPrice: number;
   totalPriceFormatted: string;
   hourlyRate: number;
