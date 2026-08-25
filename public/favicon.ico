@@ -11,10 +11,7 @@
       <stop offset="100%" stop-color="#cbd5e1" />
     </radialGradient>
   </defs>
-  <!-- Background Ball -->
   <circle cx="32" cy="32" r="30" fill="url(#ballShine)" stroke="#10b981" stroke-width="2" />
-  <!-- Inner White Circle -->
   <circle cx="32" cy="32" r="14" fill="url(#innerShine)" />
-  <!-- Number 8 -->
   <text x="32" y="38.5" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="900" text-anchor="middle" fill="#0f172a">8</text>
 </svg>

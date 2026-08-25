@@ -17,11 +17,12 @@ export function useTables(settings: ClubSettings) {
       const updated = prevTables.map((t) => {
         if (t.id === tableId && t.status === 'available') {
           const rate = getHourlyRate(t.type, settings);
+          const uniqueSessionId = `sess_${t.id}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
           return {
             ...t,
             status: 'busy' as const,
             currentSession: {
-              sessionId: `${t.id}-${Date.now()}`,
+              sessionId: uniqueSessionId,
               startTime: Date.now(),
               hourlyRate: rate,
             },
@@ -54,8 +55,10 @@ export function useTables(settings: ClubSettings) {
         settings.roundingMinutes
       );
 
+      const uniqueCompletedId = `comp_${targetTable.id}_${currentNow}_${Math.random().toString(36).substring(2, 8)}`;
+
       const completed: CompletedSession = {
-        id: active.sessionId || `${tableId}-${currentNow}`,
+        id: uniqueCompletedId,
         tableId: targetTable.id,
         tableName: targetTable.name,
         tableType: targetTable.type,

@@ -50,11 +50,12 @@ export const SessionLog: React.FC<SessionLogProps> = ({
             Bugun hali yakunlangan sessiyalar yo'q
           </div>
         ) : (
-          sessions.map((item) => {
+          sessions.map((item, index) => {
             const isTennis = item.tableType === 'tennis';
+            const uniqueKey = item.id ? `${item.id}-${index}` : `sess-${item.tableId}-${item.startTime}-${index}`;
             return (
               <div
-                key={item.id}
+                key={uniqueKey}
                 className="py-2.5 flex items-center justify-between gap-2 hover:bg-slate-950/30 px-1 rounded-lg transition-colors"
               >
                 <div className="flex items-center gap-2 min-w-0">
