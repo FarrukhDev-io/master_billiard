@@ -2,12 +2,18 @@
 
 > **Bilyard va Stol Tennisi klublari uchun zamonaviy, tezkor va sodda mobil boshqaruv hamda hisob-kitob ilovasi (Mobile POS & PWA).**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-master--billiard.vercel.app-000000.svg?style=flat&logo=vercel)](https://master-billiard.vercel.app)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-v4-38bdf8.svg)](https://tailwindcss.com/)
-[![PWA](https://img.shields.io/badge/PWA-Ready%20%26%20Offline-emerald.svg)](https://vite-pwa-org.netlify.app/)
-[![Vite](https://img.shields.io/badge/Vite-6.x-646cff.svg)](https://vitejs.dev/)
+[![PWA](https://img.shields.io/badge/PWA-Ready%20%26%20Offline-emerald.svg)](https://master-billiard.vercel.app)
 [![Vitest](https://img.shields.io/badge/Tests-22%20Passed-emerald.svg)](https://vitest.dev/)
+
+---
+
+## 🌐 Jonli Havola (Live URL)
+
+👉 **[https://master-billiard.vercel.app](https://master-billiard.vercel.app)**
 
 ---
 
@@ -37,7 +43,7 @@ Bilyardxonalarda an'anaviy ravishda daftar-ruchka, kalkulyator va kallada hisob-
 
 ## 📲 Telefonga o'rnatish (PWA Install)
 
-1. Brauzerda ilovani oching (masalan, Chrome yoki Safari);
+1. Brauzerda ilovani oching: **[https://master-billiard.vercel.app](https://master-billiard.vercel.app)**
 2. Brauzer menyusidan **"Bosh ekranga qo'shish" (Add to Home screen / Install App)** tugmasini bosing;
 3. Ilova telefonga xuddi Play Market/App Store dasturidek alohida piktogramma bilan o'rnatiladi va to'liq ekranda (full-screen) ishlaydi.
 
