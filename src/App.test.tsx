@@ -7,13 +7,13 @@ describe('App Integration tests', () => {
     localStorage.clear();
   });
 
-  it('renders table list and 5 tables on the main screen in 2-column mobile grid', () => {
+  it('renders table list and 5 tables on the main screen in responsive grid', () => {
     render(<App />);
 
     expect(screen.getByText(/Master Billiard/i)).toBeDefined();
-    expect(screen.getByText('1-Stol (Bilyard)')).toBeDefined();
-    expect(screen.getByText('4-Stol (Bilyard)')).toBeDefined();
-    expect(screen.getByText('Stol Tennisi')).toBeDefined();
+    expect(screen.getByText('1-Stol')).toBeDefined();
+    expect(screen.getByText('4-Stol')).toBeDefined();
+    expect(screen.getByText('Tennis')).toBeDefined();
   });
 
   it('allows starting a table and stops it with checkout flow and checks history tab', () => {
@@ -46,7 +46,7 @@ describe('App Integration tests', () => {
     expect(renewedStartButtons.length).toBe(5);
 
     // Kassa / Tarix sahifasiga o'tish
-    const historyTabButton = screen.getByRole('button', { name: /Kassa \/ Tarix/i });
+    const historyTabButton = screen.getAllByRole('button', { name: /Kassa & Tarix/i })[0];
     fireEvent.click(historyTabButton);
 
     // Tarix sahifasida hisobot va yozuv ko'rinadi
