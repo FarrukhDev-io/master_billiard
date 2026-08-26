@@ -118,6 +118,7 @@ export function App() {
               settings={settings}
               onSave={updateSettings}
               onReset={resetSettings}
+              onClearHistory={clearTodayHistory}
             />
           </section>
         )}

@@ -1,181 +1,130 @@
 import React, { useState } from 'react';
 import type { ClubSettings, RoundingStep } from '../types';
 import { formatMoney } from '../lib/format';
-import { Check, RotateCcw, Sliders } from 'lucide-react';
+import { Check, Trash2, Clock, ShieldCheck } from 'lucide-react';
 
 interface SettingsViewProps {
   settings: ClubSettings;
   onSave: (updated: Partial<ClubSettings>) => void;
   onReset: () => void;
+  onClearHistory?: () => void;
 }
 
-const ROUNDING_OPTIONS: { label: string; value: RoundingStep }[] = [
-  { label: '1 daq (Aniq)', value: 1 },
-  { label: '5 daqiqa', value: 5 },
-  { label: '10 daqiqa (Standart)', value: 10 },
-  { label: '15 daqiqa', value: 15 },
-  { label: '30 daqiqa', value: 30 },
+const ROUNDING_OPTIONS: { label: string; value: RoundingStep; desc: string }[] = [
+  { label: '1 daq (Aniq)', value: 1, desc: 'Sekundma-sekund aniq hisob' },
+  { label: '5 daqiqagacha', value: 5, desc: 'Har 5 daqiqaga yaxlitlash' },
+  { label: '10 daqiqa (Standart)', value: 10, desc: 'Har 10 daqiqaga yaxlitlash' },
+  { label: '15 daqiqagacha', value: 15, desc: 'Har 15 daqiqaga yaxlitlash' },
+  { label: '30 daqiqagacha', value: 30, desc: 'Yarim soatlik qadam bilan' },
 ];
 
 /**
- * Oddiy va Qulay Sozlamalar Sahifasi
+ * Super Clean & Minimalist Sozlamalar
  */
 export const SettingsView: React.FC<SettingsViewProps> = ({
   settings,
   onSave,
-  onReset,
+  onClearHistory,
 }) => {
-  const [billiardRate, setBilliardRate] = useState<number>(settings.billiardHourlyRate);
-  const [tennisRate, setTennisRate] = useState<number>(settings.tennisHourlyRate);
   const [rounding, setRounding] = useState<RoundingStep>(settings.roundingMinutes);
   const [savedNotice, setSavedNotice] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave({
-      billiardHourlyRate: billiardRate,
-      tennisHourlyRate: tennisRate,
-      roundingMinutes: rounding,
-    });
+  const handleSelectRounding = (val: RoundingStep) => {
+    setRounding(val);
+    onSave({ roundingMinutes: val });
     setSavedNotice(true);
     setTimeout(() => {
       setSavedNotice(false);
-    }, 1500);
-  };
-
-  const handleResetToDefaults = () => {
-    if (window.confirm("Boshlang'ich narxlar (Bilyard: 40k, Tennis: 20k) tiklansinmi?")) {
-      onReset();
-      setBilliardRate(40000);
-      setTennisRate(20000);
-      setRounding(1);
-    }
+    }, 1200);
   };
 
   return (
-    <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl max-w-xl mx-auto text-white">
-      {/* Sarlavha */}
-      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800 mb-5">
-        <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-          <Sliders className="w-5 h-5" />
+    <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl max-w-xl mx-auto text-white space-y-6">
+      {/* 1. Doimiy Klub Narxlari (O'zgarmas stavkalar) */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <ShieldCheck className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-sm font-black text-white uppercase tracking-tight">
+            Klub Tariflari (O'zgarmas)
+          </h3>
         </div>
-        <h2 className="text-lg font-black text-white uppercase tracking-tight">
-          Sozlamalar
-        </h2>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-slate-950/80 border border-emerald-950/80 rounded-2xl p-4 text-center">
+            <span className="text-2xl block mb-1">🎱</span>
+            <span className="text-xs text-slate-400 font-bold block">Bilyard</span>
+            <span className="text-base sm:text-xl font-black font-mono text-emerald-400">
+              {formatMoney(settings.billiardHourlyRate)}
+            </span>
+            <span className="text-[10px] text-slate-500 block">/ soat</span>
+          </div>
+
+          <div className="bg-slate-950/80 border border-blue-950/80 rounded-2xl p-4 text-center">
+            <span className="text-2xl block mb-1">🏓</span>
+            <span className="text-xs text-slate-400 font-bold block">Tennis</span>
+            <span className="text-base sm:text-xl font-black font-mono text-blue-400">
+              {formatMoney(settings.tennisHourlyRate)}
+            </span>
+            <span className="text-[10px] text-slate-500 block">/ soat</span>
+          </div>
+        </div>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-5">
-        {/* Bilyard soatlik narxi */}
-        <div>
-          <label className="block text-xs sm:text-sm font-bold text-slate-300 mb-2">
-            🎱 Bilyard soatlik narxi (so'm)
-          </label>
-          <input
-            type="number"
-            min="0"
-            step="1000"
-            value={billiardRate}
-            onChange={(e) => setBilliardRate(Math.max(0, Number(e.target.value)))}
-            className="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3.5 text-white font-mono font-black text-xl sm:text-2xl focus:outline-none focus:border-emerald-500 transition-colors"
-          />
-          <div className="flex gap-2 mt-2">
-            {[30000, 40000, 50000, 60000].map((val) => (
-              <button
-                key={val}
-                type="button"
-                onClick={() => setBilliardRate(val)}
-                className={`text-xs py-1.5 px-3 rounded-xl font-bold border transition-all cursor-pointer ${
-                  billiardRate === val
-                    ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-black'
-                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-800'
-                }`}
-              >
-                {formatMoney(val)}
-              </button>
-            ))}
+      {/* 2. Yaxlitlash Qoidasi */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-sm font-black text-white uppercase tracking-tight">
+              Vaqtni Yaxlitlash Qoidasi
+            </h3>
           </div>
+          {savedNotice && (
+            <span className="text-xs text-emerald-400 font-bold flex items-center gap-1 animate-fade-in">
+              <Check className="w-3.5 h-3.5" /> Saqlandi
+            </span>
+          )}
         </div>
 
-        {/* Tennis soatlik narxi */}
-        <div>
-          <label className="block text-xs sm:text-sm font-bold text-slate-300 mb-2">
-            🏓 Tennis soatlik narxi (so'm)
-          </label>
-          <input
-            type="number"
-            min="0"
-            step="1000"
-            value={tennisRate}
-            onChange={(e) => setTennisRate(Math.max(0, Number(e.target.value)))}
-            className="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3.5 text-white font-mono font-black text-xl sm:text-2xl focus:outline-none focus:border-sky-500 transition-colors"
-          />
-          <div className="flex gap-2 mt-2">
-            {[15000, 20000, 25000, 30000].map((val) => (
-              <button
-                key={val}
-                type="button"
-                onClick={() => setTennisRate(val)}
-                className={`text-xs py-1.5 px-3 rounded-xl font-bold border transition-all cursor-pointer ${
-                  tennisRate === val
-                    ? 'bg-sky-500 text-slate-950 border-sky-400 font-black'
-                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-800'
-                }`}
-              >
-                {formatMoney(val)}
-              </button>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {ROUNDING_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => handleSelectRounding(opt.value)}
+              className={`p-3.5 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                rounding === opt.value
+                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 font-black shadow-md'
+                  : 'bg-slate-950/70 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              <div>
+                <div className="text-xs sm:text-sm font-bold">{opt.label}</div>
+                <div className="text-[10px] text-slate-400 font-normal">{opt.desc}</div>
+              </div>
+              {rounding === opt.value && <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Yaxlitlash qadami */}
-        <div>
-          <label className="block text-xs sm:text-sm font-bold text-slate-300 mb-2">
-            ⏱ Yaxlitlash qoidasi
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {ROUNDING_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setRounding(opt.value)}
-                className={`p-3 rounded-2xl border text-xs sm:text-sm font-bold flex items-center justify-between transition-all cursor-pointer ${
-                  rounding === opt.value
-                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <span>{opt.label}</span>
-                {rounding === opt.value && <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-1.5" />}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Saqlash tugmasi */}
-        <div className="pt-2 space-y-2.5">
-          <button
-            type="submit"
-            className="w-full h-12 sm:h-13 rounded-2xl font-black text-sm sm:text-base bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shadow-lg shadow-emerald-950/50"
-          >
-            {savedNotice ? (
-              <>
-                <Check className="w-5 h-5 stroke-[2.5]" /> Saqlandi!
-              </>
-            ) : (
-              'SOZLAMALARNI SAQLASH'
-            )}
-          </button>
-
+      {/* 3. Kassani Tozalash (Yangi kunni boshlash) */}
+      {onClearHistory && (
+        <div className="pt-2 border-t border-slate-800">
           <button
             type="button"
-            onClick={handleResetToDefaults}
-            className="w-full py-2 text-xs text-slate-400 hover:text-slate-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            onClick={() => {
+              if (window.confirm("Bugungi barcha kassa va cheklar tarixini tozalab yangi kunni boshlamoqchimisiz?")) {
+                onClearHistory();
+              }
+            }}
+            className="w-full h-11 rounded-2xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 border border-rose-900/40 transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            Standart narxlarni tiklash (40k / 20k)
+            <Trash2 className="w-4 h-4" />
+            Bugungi kassa tarixini tozalash
           </button>
         </div>
-      </form>
+      )}
     </div>
   );
 };

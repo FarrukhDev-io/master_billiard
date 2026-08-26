@@ -54,7 +54,7 @@ describe('App Integration tests', () => {
     expect(screen.getByText(/Bugungi Cheklar/i)).toBeDefined();
   });
 
-  it('allows navigating to settings page and changing prices', () => {
+  it('allows navigating to settings page and selecting rounding step', () => {
     render(<App />);
 
     // Sozlamalar tabini bosish
@@ -63,11 +63,11 @@ describe('App Integration tests', () => {
 
     // Sozlamalar sahifasi ochildi
     expect(screen.getAllByText('Sozlamalar').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/Bilyard soatlik narxi/i)).toBeDefined();
-    expect(screen.getByText(/Tennis soatlik narxi/i)).toBeDefined();
+    expect(screen.getByText(/Klub Tariflari/i)).toBeDefined();
+    expect(screen.getByText(/Vaqtni Yaxlitlash/i)).toBeDefined();
 
-    // Saqlash tugmasini bosish
-    const saveButton = screen.getByRole('button', { name: /SOZLAMALARNI SAQLASH/i });
-    fireEvent.click(saveButton);
+    // Yaxlitlash qoidasini bosish
+    const roundingOption = screen.getByText(/10 daqiqa \(Standart\)/i);
+    fireEvent.click(roundingOption);
   });
 });
