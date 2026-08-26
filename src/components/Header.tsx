@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { formatTime } from '../lib/format';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 import type { ActiveTab } from './BottomNav';
-import { LayoutGrid, Receipt, Settings, Maximize, Minimize } from 'lucide-react';
+import { LayoutGrid, Receipt, Settings, Maximize, Minimize, WifiOff } from 'lucide-react';
 
 interface HeaderProps {
   currentTime: number;
@@ -12,7 +13,7 @@ interface HeaderProps {
 }
 
 /**
- * Responsive Header with Fullscreen Toggle and Navigation
+ * Responsive Header with Fullscreen, Navigation and Offline Indicator
  */
 export const Header: React.FC<HeaderProps> = ({
   currentTime,
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeCount,
   completedCount,
 }) => {
+  const isOnline = useOnlineStatus();
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
@@ -46,17 +48,27 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-30 bg-[#080c10]/95 backdrop-blur-md border-b border-slate-800/80">
       <div className="max-w-6xl mx-auto px-3 sm:px-6 h-13 sm:h-14 flex items-center justify-between">
-        {/* Chap: Logo */}
-        <div className="flex items-center gap-2">
-          <span className="text-xl sm:text-2xl drop-shadow-sm">🎱</span>
-          <div>
-            <h1 className="font-extrabold text-sm sm:text-base text-white tracking-tight leading-tight">
-              Master Billiard
-            </h1>
-            <span className="hidden sm:inline-block text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
-              Club POS
-            </span>
+        {/* Chap: Logo va Offline belgisi */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xl sm:text-2xl drop-shadow-sm">🎱</span>
+            <div>
+              <h1 className="font-extrabold text-sm sm:text-base text-white tracking-tight leading-tight">
+                Master Billiard
+              </h1>
+              <span className="hidden sm:inline-block text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
+                Club POS
+              </span>
+            </div>
           </div>
+
+          {/* Tarmoqsiz (Offline) holat ko'rsatkichi */}
+          {!isOnline && (
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] sm:text-xs font-bold animate-pulse">
+              <WifiOff className="w-3 h-3" />
+              <span>Offline</span>
+            </div>
+          )}
         </div>
 
         {/* O'rta: Desktop Tablar */}

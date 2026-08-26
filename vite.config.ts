@@ -10,12 +10,14 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       includeAssets: [
         'favicon.ico',
         'favicon.svg',
         'apple-touch-icon.png',
         'pwa-192x192.png',
         'pwa-512x512.png',
+        'maskable-icon-512x512.png',
       ],
       manifest: {
         name: 'Master Billiard & Tennis Club',
@@ -24,7 +26,7 @@ export default defineConfig({
         theme_color: '#080c10',
         background_color: '#080c10',
         display: 'standalone',
-        orientation: 'portrait',
+        orientation: 'any',
         scope: '/',
         start_url: '/',
         icons: [
@@ -52,16 +54,28 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        navigateFallback: '/index.html',
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,woff,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: ({ request }) => request.destination === 'document' || request.destination === 'script' || request.destination === 'style' || request.destination === 'image',
-            handler: 'StaleWhileRevalidate',
+            urlPattern: ({ request }) =>
+              request.destination === 'document' ||
+              request.destination === 'script' ||
+              request.destination === 'style' ||
+              request.destination === 'image' ||
+              request.destination === 'font',
+            handler: 'CacheFirst',
             options: {
-              cacheName: 'master-billiard-cache',
+              cacheName: 'master-billiard-offline-cache-v1',
               expiration: {
-                maxEntries: 60,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                maxEntries: 100,
+                maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year offline storage
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
               },
             },
           },
