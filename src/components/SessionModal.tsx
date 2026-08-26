@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Table, ClubSettings } from '../types';
 import { calculateSessionDetails, getHourlyRate } from '../lib/pricing';
-import { formatTime, formatDuration, formatDurationHuman, formatMoney } from '../lib/format';
+import { formatTime, formatDurationHuman, formatMoney } from '../lib/format';
 import { X, Check, Trash2, ArrowLeft } from 'lucide-react';
 
 interface SessionModalProps {
@@ -15,7 +15,7 @@ interface SessionModalProps {
 }
 
 /**
- * Mobilga mos, oddiy va tushunarli hisob-kitob oynasi (Bottom Sheet / Modal)
+ * Ultra-Clean Hisob-Kitob Modali (Ortiqcha so'zlarsiz, sodda va tushunarli)
  */
 export const SessionModal: React.FC<SessionModalProps> = ({
   table,
@@ -33,6 +33,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({
   }
 
   const isTennis = table.type === 'tennis';
+  const displayName = table.shortName || table.name.replace(/\s*\(.*?\)/, '');
   const rate = table.currentSession.hourlyRate || getHourlyRate(table.type, settings);
   const calculation = calculateSessionDetails(
     table.currentSession.startTime,
@@ -54,12 +55,11 @@ export const SessionModal: React.FC<SessionModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-xs transition-opacity"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-xs transition-opacity"
       onClick={onClose}
     >
-      {/* Bottom Sheet Card */}
       <div
-        className="w-full max-w-md bg-slate-900 border-t sm:border border-slate-800 rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl text-white max-h-[92vh] overflow-y-auto"
+        className="w-full max-w-md bg-[#0f172a] border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl text-white max-h-[92vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mobile handle indicator */}
@@ -68,8 +68,10 @@ export const SessionModal: React.FC<SessionModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
           <div className="flex items-center gap-2">
-            <span className="text-xl">{isTennis ? '🏓' : '🎱'}</span>
-            <h2 className="text-lg font-bold text-white">{table.name}</h2>
+            <span className="text-2xl">{isTennis ? '🏓' : '🎱'}</span>
+            <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
+              {displayName}
+            </h2>
           </div>
           <button
             type="button"
@@ -82,95 +84,72 @@ export const SessionModal: React.FC<SessionModalProps> = ({
 
         {!showCancelConfirm ? (
           <div className="mt-4 space-y-4">
-            {/* Asosiy to'lov summasi */}
-            <div className="rounded-xl p-4 text-center bg-slate-950 border border-slate-800">
-              <span className="text-xs text-slate-400 block mb-1">
-                Jami to'lov summasi
+            {/* Katta To'lov Summasi */}
+            <div className="rounded-2xl p-5 text-center bg-slate-950/90 border border-slate-800/90 shadow-inner">
+              <span className="text-xs font-semibold text-slate-400 block mb-1">
+                To'lov summasi
               </span>
-              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-400">
+              <div className="text-3xl sm:text-4xl font-black font-mono text-emerald-400 tracking-tight">
                 {formatMoney(calculation.totalPrice)}
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                {calculation.roundedMinutes} daqiqaga hisoblandi ({settings.roundingMinutes} daqiqa yaxlitlash qoidasi)
-              </p>
             </div>
 
-            {/* Tafsilotlar */}
-            <div className="bg-slate-950/70 rounded-xl p-3.5 space-y-2.5 text-xs border border-slate-800/80">
+            {/* Qisqa va Aniq Tafsilotlar */}
+            <div className="bg-slate-950/60 rounded-2xl p-4 space-y-3 text-xs sm:text-sm border border-slate-800/70">
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">⏱ Boshlangan vaqt:</span>
-                <span className="font-mono text-slate-200 font-medium">
-                  {formatTime(table.currentSession.startTime)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">⏱ Hozirgi vaqt:</span>
-                <span className="font-mono text-slate-200 font-medium">
-                  {formatTime(currentTime)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-400">⏳ Haqiqiy o'ynalgan vaqt:</span>
+                <span className="text-slate-400 font-medium">O'ynalgan vaqt:</span>
                 <span className="font-mono text-white font-bold">
-                  {formatDuration(calculation.durationSeconds)} ({formatDurationHuman(calculation.durationSeconds)})
+                  {formatDurationHuman(calculation.durationSeconds)}
                 </span>
               </div>
-              <div className="flex justify-between items-center pt-2 border-t border-slate-800 text-slate-300">
-                <span className="text-slate-400">🔢 Yaxlitlangan vaqt:</span>
-                <span className="font-mono font-semibold text-emerald-300">
-                  {calculation.roundedMinutes} daqiqa
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400 font-medium">Oraliq:</span>
+                <span className="font-mono text-slate-200">
+                  {formatTime(table.currentSession.startTime)} — {formatTime(currentTime)}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-slate-300">
-                <span className="text-slate-400">💵 Soatlik stavka:</span>
-                <span className="font-mono font-medium">
+              <div className="flex justify-between items-center pt-2 border-t border-slate-800/70">
+                <span className="text-slate-400 font-medium">Stavka:</span>
+                <span className="font-mono text-slate-200 font-semibold">
                   {formatMoney(rate)} / soat
                 </span>
               </div>
             </div>
 
             {/* Tugmalar */}
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2.5 pt-1">
               <button
                 type="button"
                 onClick={handleFinish}
-                className="w-full h-12 rounded-xl font-bold text-sm flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white transition-colors cursor-pointer shadow-md"
+                className="w-full h-12 sm:h-13 rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all active:scale-95 cursor-pointer shadow-lg shadow-emerald-950/50"
               >
-                <Check className="w-4 h-4" />
-                Hisoblash va Bo'shatish
-              </button>
-
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full h-10 rounded-xl font-medium text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
-              >
-                Davom etmoqda (Oynani yopish)
+                <Check className="w-5 h-5 stroke-[2.5]" />
+                TO'LOVNI QABUL QILISH VA BO'SHATISH
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowCancelConfirm(true)}
-                className="w-full py-1.5 text-[11px] text-rose-400 hover:text-rose-300 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                className="w-full py-2 text-xs text-rose-400 hover:text-rose-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Trash2 className="w-3 h-3" />
+                <Trash2 className="w-3.5 h-3.5" />
                 To'lovsiz bekor qilish
               </button>
             </div>
           </div>
         ) : (
-          <div className="mt-4 p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 text-center space-y-3">
-            <h3 className="font-bold text-sm text-rose-300">
+          <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-rose-950/30 border border-rose-900/50 text-center space-y-3">
+            <h3 className="font-bold text-sm sm:text-base text-rose-300">
               Sessiyani to'lovsiz bekor qilasizmi?
             </h3>
             <p className="text-xs text-slate-300">
-              O'yin to'xtatiladi va kassaga hisoblanmaydi.
+              Stol bo'shatiladi va kassaga hisoblanmaydi.
             </p>
-            <div className="flex gap-2 pt-1">
+            <div className="flex gap-2.5 pt-1">
               <button
                 type="button"
                 onClick={() => setShowCancelConfirm(false)}
-                className="flex-1 h-10 rounded-lg bg-slate-800 text-slate-200 text-xs font-medium flex items-center justify-center gap-1 cursor-pointer"
+                className="flex-1 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Ortga
@@ -178,9 +157,9 @@ export const SessionModal: React.FC<SessionModalProps> = ({
               <button
                 type="button"
                 onClick={handleCancel}
-                className="flex-1 h-10 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors cursor-pointer"
+                className="flex-1 h-10 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors cursor-pointer"
               >
-                Ha, bekor qilish
+                Bekor qilish
               </button>
             </div>
           </div>

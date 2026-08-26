@@ -20,29 +20,29 @@ describe('App Integration tests', () => {
     render(<App />);
 
     // 1-stol bo'sh holatda
-    const startButtons = screen.getAllByRole('button', { name: /Boshlash/i });
+    const startButtons = screen.getAllByRole('button', { name: /BOSHLASH/i });
     expect(startButtons.length).toBe(5);
 
     // 1-stol sessiyasini boshlash
     fireEvent.click(startButtons[0]);
 
-    // Endi 1-stol band bo'ldi va "Hisoblash" tugmasi chiqadi
-    const calculateButtons = screen.getAllByRole('button', { name: /Hisoblash/i });
+    // Endi 1-stol band bo'ldi va "HISOBLASH" tugmasi chiqadi
+    const calculateButtons = screen.getAllByRole('button', { name: /HISOBLASH/i });
     expect(calculateButtons.length).toBeGreaterThanOrEqual(1);
 
     // Modalni ochish uchun tugmaga bosish
     fireEvent.click(calculateButtons[0]);
 
     // Modal ochiqligini tekshirish
-    expect(screen.getByText(/to'lov summasi/i)).toBeDefined();
-    expect(screen.getByText(/Boshlangan vaqt:/i)).toBeDefined();
+    expect(screen.getByText(/To'lov summasi/i)).toBeDefined();
+    expect(screen.getByText(/O'ynalgan vaqt:/i)).toBeDefined();
 
-    // Modal ichidagi "Hisoblash va Bo'shatish" tugmasini bosish
-    const modalFinishButtons = screen.getAllByRole('button', { name: /Hisoblash va Bo'shatish/i });
+    // Modal ichidagi to'lovni qabul qilish tugmasini bosish
+    const modalFinishButtons = screen.getAllByRole('button', { name: /TO'LOVNI QABUL QILISH VA BO'SHATISH/i });
     fireEvent.click(modalFinishButtons[0]);
 
     // Stol qayta bo'shadi
-    const renewedStartButtons = screen.getAllByRole('button', { name: /Boshlash/i });
+    const renewedStartButtons = screen.getAllByRole('button', { name: /BOSHLASH/i });
     expect(renewedStartButtons.length).toBe(5);
 
     // Kassa / Tarix sahifasiga o'tish
@@ -51,7 +51,7 @@ describe('App Integration tests', () => {
 
     // Tarix sahifasida hisobot va yozuv ko'rinadi
     expect(screen.getByText(/Tushum/i)).toBeDefined();
-    expect(screen.getByText(/Sessiyalar Tarixi/i)).toBeDefined();
+    expect(screen.getByText(/Bugungi Cheklar/i)).toBeDefined();
   });
 
   it('allows navigating to settings page and changing prices', () => {
@@ -62,12 +62,12 @@ describe('App Integration tests', () => {
     fireEvent.click(settingsTabButton);
 
     // Sozlamalar sahifasi ochildi
-    expect(screen.getByText('Klub Sozlamalari')).toBeDefined();
+    expect(screen.getAllByText('Sozlamalar').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/Bilyard soatlik narxi/i)).toBeDefined();
     expect(screen.getByText(/Tennis soatlik narxi/i)).toBeDefined();
 
     // Saqlash tugmasini bosish
-    const saveButton = screen.getByRole('button', { name: /Sozlamalarni Saqlash/i });
+    const saveButton = screen.getByRole('button', { name: /SOZLAMALARNI SAQLASH/i });
     fireEvent.click(saveButton);
   });
 });
