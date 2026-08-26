@@ -11,7 +11,7 @@ interface TableGridProps {
 }
 
 /**
- * Oddiy va responsive stollar to'plami
+ * Mobile-First 2-Column Responsive Stollar To'plami
  */
 export const TableGrid: React.FC<TableGridProps> = ({
   tables,
@@ -21,7 +21,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
   onOpenSessionModal,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
       {tables.map((table) => (
         <TableCard
           key={table.id}

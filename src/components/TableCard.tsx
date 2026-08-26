@@ -13,8 +13,7 @@ interface TableCardProps {
 }
 
 /**
- * Stollar Kartochkasi (Table Card)
- * Pul har soniyada real vaqtda yangilanadi
+ * Clean & Minimalist 2-Column Mobile Table Card
  */
 export const TableCard: React.FC<TableCardProps> = ({
   table,
@@ -26,20 +25,20 @@ export const TableCard: React.FC<TableCardProps> = ({
   const isBusy = table.status === 'busy' && !!table.currentSession;
   const isTennis = table.type === 'tennis';
 
-  const currentRate = isBusy && table.currentSession?.hourlyRate
+  const rate = isBusy && table.currentSession?.hourlyRate
     ? table.currentSession.hourlyRate
     : getHourlyRate(table.type, settings);
 
-  const calculation = isBusy && table.currentSession
+  const calc = isBusy && table.currentSession
     ? calculateSessionDetails(
         table.currentSession.startTime,
         currentTime,
-        currentRate,
+        rate,
         settings.roundingMinutes
       )
     : null;
 
-  const handleCardClick = () => {
+  const handleClick = () => {
     if (isBusy) {
       onOpenSessionModal(table);
     } else {
@@ -49,89 +48,80 @@ export const TableCard: React.FC<TableCardProps> = ({
 
   return (
     <div
-      onClick={handleCardClick}
-      className={`rounded-2xl p-4 transition-all border cursor-pointer select-none flex flex-col justify-between active:scale-[0.985] ${
+      onClick={handleClick}
+      className={`rounded-xl p-3 sm:p-4 border transition-all cursor-pointer select-none flex flex-col justify-between active:scale-[0.98] ${
         isBusy
           ? isTennis
-            ? 'bg-gradient-to-b from-sky-950/60 to-[#0f172a] border-sky-500/80 shadow-md shadow-sky-950/40 ring-1 ring-sky-500/40'
-            : 'bg-gradient-to-b from-emerald-950/60 to-[#0f172a] border-emerald-500/80 shadow-md shadow-emerald-950/40 ring-1 ring-emerald-500/40'
-          : 'bg-[#0f172a] border-slate-800 hover:border-slate-700 shadow-xs'
+            ? 'bg-sky-950/30 border-sky-500/70 shadow-xs'
+            : 'bg-emerald-950/30 border-emerald-500/70 shadow-xs'
+          : 'bg-[#0f172a] border-slate-800 hover:border-slate-700'
       }`}
     >
-      {/* Yuqori qism: Stol nomi va holati */}
+      {/* 1. Sarlavha va Holat */}
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xl leading-none">{isTennis ? '🏓' : '🎱'}</span>
-            <div>
-              <h3 className="font-bold text-sm sm:text-base text-white leading-tight">
-                {table.name}
-              </h3>
-              <span className="text-[11px] text-slate-400">
-                {isTennis ? 'Stol tennisi' : 'Bilyard'}
-              </span>
-            </div>
+        <div className="flex items-center justify-between gap-1 mb-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-base shrink-0">{isTennis ? '🏓' : '🎱'}</span>
+            <h3 className="font-bold text-xs sm:text-sm text-white truncate leading-tight">
+              {table.name}
+            </h3>
           </div>
 
-          {/* Holat nishoni */}
-          {isBusy ? (
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide ${
-                isTennis
-                  ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
-                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-              }`}
-            >
+          {/* Minimal Holat Nuqtasi */}
+          <span
+            className={`shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+              isBusy
+                ? isTennis
+                  ? 'bg-sky-500/20 text-sky-300'
+                  : 'bg-emerald-500/20 text-emerald-300'
+                : 'bg-slate-800 text-slate-400'
+            }`}
+          >
+            {isBusy && (
               <span
                 className={`w-1.5 h-1.5 rounded-full animate-pulse ${
                   isTennis ? 'bg-sky-400' : 'bg-emerald-400'
                 }`}
               />
-              Band
-            </span>
-          ) : (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700/60">
-              Bo'sh
-            </span>
-          )}
+            )}
+            {isBusy ? 'Band' : 'Bo\'sh'}
+          </span>
         </div>
 
-        {/* Markaziy qism: Taymer va Har soniyada yangilanuvchi pul */}
-        {isBusy && calculation && table.currentSession ? (
-          <div className="my-2 p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 text-center">
-            {/* Katta o'qiladigan taymer */}
-            <div className="font-mono text-2xl sm:text-[28px] font-black text-white tracking-wider">
-              {formatDuration(calculation.durationSeconds)}
+        {/* 2. Markaz: Taymer yoki Narx */}
+        {isBusy && calc && table.currentSession ? (
+          <div className="my-1.5 py-2 px-2 rounded-lg bg-slate-950/80 border border-slate-800/80 text-center">
+            {/* Taymer */}
+            <div className="font-mono text-base sm:text-xl font-black text-white tracking-tight">
+              {formatDuration(calc.durationSeconds)}
             </div>
 
-            {/* Har soniya yangilanuvchi pul va boshlangan vaqt */}
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-xs">
-              <span className="text-slate-400 font-mono">
-                {formatTime(table.currentSession.startTime)} dan
+            {/* Pul va Vaqt */}
+            <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-800/80 text-[11px]">
+              <span className="text-slate-400 font-mono text-[10px]">
+                {formatTime(table.currentSession.startTime)}
               </span>
-              <div className="text-right">
-                <span
-                  className={`font-mono font-black text-sm sm:text-base ${
-                    isTennis ? 'text-sky-300' : 'text-emerald-400'
-                  }`}
-                >
-                  {formatMoney(calculation.livePrice)}
-                </span>
-              </div>
+              <span
+                className={`font-mono font-black ${
+                  isTennis ? 'text-sky-300' : 'text-emerald-400'
+                }`}
+              >
+                {formatMoney(calc.livePrice)}
+              </span>
             </div>
           </div>
         ) : (
-          <div className="my-2 py-4 px-3 rounded-xl bg-slate-950/40 border border-slate-800/50 text-center">
-            <span className="text-xs text-slate-400 block mb-0.5">Soatlik narx</span>
-            <span className="text-base font-bold text-slate-200 font-mono">
-              {formatMoney(currentRate)} / soat
+          <div className="my-1.5 py-3 px-2 rounded-lg bg-slate-950/40 border border-slate-850 text-center">
+            <span className="text-xs sm:text-sm font-bold text-slate-300 font-mono">
+              {formatMoney(rate)}
             </span>
+            <span className="block text-[10px] text-slate-400">/ soat</span>
           </div>
         )}
       </div>
 
-      {/* Pastki harakat tugmasi (44px balandlik) */}
-      <div className="mt-2 pt-2 border-t border-slate-800/60">
+      {/* 3. Harakat Tugmasi */}
+      <div className="mt-1.5">
         {isBusy ? (
           <button
             type="button"
@@ -139,13 +129,13 @@ export const TableCard: React.FC<TableCardProps> = ({
               e.stopPropagation();
               onOpenSessionModal(table);
             }}
-            className={`w-full h-11 rounded-xl font-bold text-sm flex items-center justify-center gap-1.5 text-white shadow-sm transition-all active:scale-95 cursor-pointer ${
+            className={`w-full h-9 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 text-white transition-colors cursor-pointer ${
               isTennis
                 ? 'bg-sky-600 hover:bg-sky-500'
                 : 'bg-emerald-600 hover:bg-emerald-500'
             }`}
           >
-            <Receipt className="w-4 h-4" />
+            <Receipt className="w-3.5 h-3.5" />
             Hisoblash
           </button>
         ) : (
@@ -155,9 +145,9 @@ export const TableCard: React.FC<TableCardProps> = ({
               e.stopPropagation();
               onStart(table.id);
             }}
-            className="w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 transition-all active:scale-95 cursor-pointer"
+            className="w-full h-9 rounded-lg font-semibold text-xs flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
           >
-            <Play className="w-3.5 h-3.5 fill-current" />
+            <Play className="w-3 h-3 fill-current" />
             Boshlash
           </button>
         )}

@@ -12,7 +12,7 @@ import { BottomNav, type ActiveTab } from './components/BottomNav';
 import type { Table } from './types';
 
 /**
- * Asosiy ilova - 1-sahifada faqat stollar, qolgan ma'lumotlar alohida sahifalarda
+ * Master Billiard - Ultra Clean & Minimalist POS
  */
 export function App() {
   const { settings, updateSettings, resetSettings } = useSettings();
@@ -50,34 +50,13 @@ export function App() {
   return (
     <div className="min-h-screen bg-[#080c10] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 pb-20">
       {/* Yuqori Panel */}
-      <Header
-        currentTime={currentTime}
-        onOpenSettings={() => setActiveTab('settings')}
-      />
+      <Header currentTime={currentTime} />
 
-      {/* Asosiy Ish Maydoni */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-3.5 space-y-4">
-        {/* 1-SAHIFA: FAQAT STOLLAR */}
+      {/* Asosiy Maydon */}
+      <main className="flex-1 max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2.5 sm:py-3.5 space-y-3">
+        {/* 1-SAHIFA: FAQAT STOLLAR (2-USTUNLI MOBIL GRID) */}
         {activeTab === 'tables' && (
-          <section className="space-y-3" aria-label="Stollar ro'yxati">
-            {/* Qisqa zal holati */}
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-300">
-                  Zal: {tables.length} ta stol
-                </h2>
-              </div>
-              <span className="text-[11px] text-slate-400 font-medium">
-                {activeTablesCount > 0 ? (
-                  <span className="text-amber-400 font-semibold">{activeTablesCount} ta stol band</span>
-                ) : (
-                  <span className="text-emerald-400 font-semibold">Barcha stollar bo'sh</span>
-                )}
-              </span>
-            </div>
-
-            {/* 5 ta stol kartochkalari */}
+          <section aria-label="Stollar ro'yxati">
             <TableGrid
               tables={tables}
               settings={settings}
@@ -90,8 +69,7 @@ export function App() {
 
         {/* 2-SAHIFA: KASSA VA TARIX */}
         {activeTab === 'history' && (
-          <div className="space-y-4 animate-fade-in">
-            {/* Kunlik hisobot */}
+          <div className="space-y-3">
             <section aria-label="Hisobot paneli">
               <RevenueSummary
                 todayRevenue={todayRevenue}
@@ -101,7 +79,6 @@ export function App() {
               />
             </section>
 
-            {/* Bugungi yakunlangan o'yinlar cheklari */}
             <section aria-label="Sessiyalar tarixi">
               <SessionLog
                 sessions={todaySessions}
@@ -113,7 +90,7 @@ export function App() {
 
         {/* 3-SAHIFA: SOZLAMALAR */}
         {activeTab === 'settings' && (
-          <section className="animate-fade-in" aria-label="Sozlamalar paneli">
+          <section aria-label="Sozlamalar paneli">
             <SettingsView
               settings={settings}
               onSave={updateSettings}

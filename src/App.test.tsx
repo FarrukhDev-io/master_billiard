@@ -7,14 +7,13 @@ describe('App Integration tests', () => {
     localStorage.clear();
   });
 
-  it('renders table list and 5 tables on the main screen', () => {
+  it('renders table list and 5 tables on the main screen in 2-column mobile grid', () => {
     render(<App />);
 
     expect(screen.getByText(/Master Billiard/i)).toBeDefined();
     expect(screen.getByText('1-Stol (Bilyard)')).toBeDefined();
     expect(screen.getByText('4-Stol (Bilyard)')).toBeDefined();
     expect(screen.getByText('Stol Tennisi')).toBeDefined();
-    expect(screen.getByText(/Barcha stollar bo'sh/i)).toBeDefined();
   });
 
   it('allows starting a table and stops it with checkout flow and checks history tab', () => {
@@ -51,7 +50,7 @@ describe('App Integration tests', () => {
     fireEvent.click(historyTabButton);
 
     // Tarix sahifasida hisobot va yozuv ko'rinadi
-    expect(screen.getByText(/Bugungi tushum/i)).toBeDefined();
+    expect(screen.getByText(/Tushum/i)).toBeDefined();
     expect(screen.getByText(/Sessiyalar Tarixi/i)).toBeDefined();
   });
 

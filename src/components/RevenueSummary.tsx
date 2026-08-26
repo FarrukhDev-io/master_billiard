@@ -10,8 +10,7 @@ interface RevenueSummaryProps {
 }
 
 /**
- * Kunlik Kassa Bloki (Revenue Summary)
- * 3 ta metrika: Bugungi tushum, Band stollar, Tugagan o'yinlar
+ * Kunlik Kassa Statistikasi (Compact 3-Card Row)
  */
 export const RevenueSummary: React.FC<RevenueSummaryProps> = ({
   todayRevenue,
@@ -20,56 +19,47 @@ export const RevenueSummary: React.FC<RevenueSummaryProps> = ({
   completedCount,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+    <div className="grid grid-cols-3 gap-2 sm:gap-3">
       {/* 1. Bugungi Tushum */}
-      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
-        <div>
-          <span className="text-[11px] font-medium text-slate-400 block mb-0.5">
-            Bugungi tushum
+      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-2.5 sm:p-3.5 flex flex-col justify-between shadow-xs">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] sm:text-xs font-medium text-slate-400 truncate">
+            Tushum
           </span>
-          <span className="text-xl sm:text-2xl font-bold text-emerald-400 font-mono tracking-tight">
-            {formatMoney(todayRevenue)}
-          </span>
+          <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
         </div>
-        <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-          <DollarSign className="w-4.5 h-4.5" />
-        </div>
+        <span className="text-sm sm:text-xl font-bold text-emerald-400 font-mono tracking-tight truncate">
+          {formatMoney(todayRevenue)}
+        </span>
       </div>
 
       {/* 2. Band Stollar */}
-      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
-        <div>
-          <span className="text-[11px] font-medium text-slate-400 block mb-0.5">
-            Band stollar
+      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-2.5 sm:p-3.5 flex flex-col justify-between shadow-xs">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] sm:text-xs font-medium text-slate-400 truncate">
+            Band
           </span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl sm:text-2xl font-bold text-amber-400 font-mono">
-              {activeCount}
-            </span>
-            <span className="text-xs text-slate-400">/ {totalTables} ta</span>
-          </div>
+          <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
         </div>
-        <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
-          <Clock className="w-4.5 h-4.5" />
+        <div className="flex items-baseline gap-1">
+          <span className="text-sm sm:text-xl font-bold text-amber-400 font-mono">
+            {activeCount}
+          </span>
+          <span className="text-[10px] sm:text-xs text-slate-400">/{totalTables}</span>
         </div>
       </div>
 
       {/* 3. Tugagan O'yinlar */}
-      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-3.5 flex items-center justify-between shadow-xs">
-        <div>
-          <span className="text-[11px] font-medium text-slate-400 block mb-0.5">
-            Tugagan o'yinlar
+      <div className="bg-[#0f172a] border border-slate-800/80 rounded-xl p-2.5 sm:p-3.5 flex flex-col justify-between shadow-xs">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] sm:text-xs font-medium text-slate-400 truncate">
+            O'yinlar
           </span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl sm:text-2xl font-bold text-sky-400 font-mono">
-              {completedCount}
-            </span>
-            <span className="text-xs text-slate-400">ta sessiya</span>
-          </div>
+          <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
         </div>
-        <div className="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0">
-          <CheckCircle2 className="w-4.5 h-4.5" />
-        </div>
+        <span className="text-sm sm:text-xl font-bold text-sky-400 font-mono">
+          {completedCount} ta
+        </span>
       </div>
     </div>
   );
