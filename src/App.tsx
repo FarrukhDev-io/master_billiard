@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSettings } from './hooks/useSettings';
 import { useTables } from './hooks/useTables';
 import { useLiveTimer } from './hooks/useLiveTimer';
@@ -12,7 +12,7 @@ import { BottomNav, type ActiveTab } from './components/BottomNav';
 import type { Table } from './types';
 
 /**
- * Master Billiard - Full Desktop Dashboard & Mobile-First POS
+ * Master Billiard - Authentic Table Hall & Auto-Fullscreen POS
  */
 export function App() {
   const { settings, updateSettings, resetSettings } = useSettings();
@@ -33,6 +33,23 @@ export function App() {
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
 
+  // Birinchi bosishda to'liq ekranga (auto full-screen) o'tish
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    };
+
+    window.addEventListener('click', handleFirstInteraction, { once: true });
+    window.addEventListener('touchstart', handleFirstInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
+
   const handleOpenSessionModal = (table: Table) => {
     setSelectedTable(table);
     setIsSessionModalOpen(true);
@@ -49,7 +66,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#080c10] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 pb-20 md:pb-8">
-      {/* Yuqori Panel (Desktopda navigatsiya bilan) */}
+      {/* Yuqori Panel */}
       <Header
         currentTime={currentTime}
         activeTab={activeTab}
@@ -58,64 +75,24 @@ export function App() {
         completedCount={todaySessions.length}
       />
 
-      {/* Asosiy Ish Maydoni (Katta ekranda to'liq kenglikdan foydalaniladi) */}
-      <main className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
-        {/* 1-SAHIFA: STOLLAR (Desktopda 2 ustunli Dashboard: Chapda Stollar, O'ngda Kassa & Tarix) */}
+      {/* Asosiy Ish Maydoni */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-3 sm:py-6">
+        {/* 1-SAHIFA: FAQAT STOLLAR (KLUB ZALI) */}
         {activeTab === 'tables' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start animate-fade-in">
-            {/* Chap Qism: 5 ta Stol (Mobilda 2-ustun, Desktopda 3-ustun) */}
-            <div className="lg:col-span-8 xl:col-span-8 space-y-3 sm:space-y-4">
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-300">
-                    Klub Zali ({tables.length} ta stol)
-                  </h2>
-                </div>
-                <span className="text-xs text-slate-400 font-medium hidden sm:inline">
-                  {activeTablesCount > 0 ? (
-                    <span className="text-amber-400 font-semibold">{activeTablesCount} ta stol band</span>
-                  ) : (
-                    <span className="text-emerald-400 font-semibold">Barcha stollar bo'sh</span>
-                  )}
-                </span>
-              </div>
-
-              <TableGrid
-                tables={tables}
-                settings={settings}
-                currentTime={currentTime}
-                onStartSession={startSession}
-                onOpenSessionModal={handleOpenSessionModal}
-              />
-            </div>
-
-            {/* O'ng Qism: Desktop Kassa & Jonli Cheklar Paneli (Faqat Desktop lg+ ekranlarda ko'rinadi) */}
-            <div className="hidden lg:block lg:col-span-4 xl:col-span-4 space-y-5 sticky top-20">
-              {/* Bugungi Kassa */}
-              <section aria-label="Hisobot paneli">
-                <RevenueSummary
-                  todayRevenue={todayRevenue}
-                  activeCount={activeTablesCount}
-                  totalTables={tables.length}
-                  completedCount={todaySessions.length}
-                />
-              </section>
-
-              {/* Jonli Cheklar Tarixi */}
-              <section aria-label="Sessiyalar tarixi">
-                <SessionLog
-                  sessions={todaySessions}
-                  onClearHistory={clearTodayHistory}
-                />
-              </section>
-            </div>
-          </div>
+          <section aria-label="Klub zali stollari" className="animate-fade-in space-y-3 sm:space-y-4">
+            <TableGrid
+              tables={tables}
+              settings={settings}
+              currentTime={currentTime}
+              onStartSession={startSession}
+              onOpenSessionModal={handleOpenSessionModal}
+            />
+          </section>
         )}
 
-        {/* 2-SAHIFA: KASSA VA TARIX (Mobilda yoki to'liq ko'rinishda) */}
+        {/* 2-SAHIFA: KASSA VA TARIX */}
         {activeTab === 'history' && (
-          <div className="space-y-5 max-w-4xl mx-auto animate-fade-in">
+          <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto animate-fade-in">
             <section aria-label="Hisobot paneli">
               <RevenueSummary
                 todayRevenue={todayRevenue}

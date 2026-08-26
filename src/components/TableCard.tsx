@@ -13,8 +13,9 @@ interface TableCardProps {
 }
 
 /**
- * Mobile-First & Desktop Dashboard Table Card
- * Mobilda ixcham 2-ustun, Desktopda katta va hashamatli POS kartochka
+ * Haqiqiy Bilyard va Tennis Stoli Dizayni (Authentic Table Look)
+ * - Bilyard: Movut yashil, bortlar, burchak luzalari va ichki-tashqi shadowlar
+ * - Tennis: Sport ko'k foni, oq o'rta chiziq va setka belgisi
  */
 export const TableCard: React.FC<TableCardProps> = ({
   table,
@@ -50,66 +51,81 @@ export const TableCard: React.FC<TableCardProps> = ({
   return (
     <div
       onClick={handleClick}
-      className={`rounded-xl sm:rounded-2xl p-3 sm:p-5 border transition-all duration-200 cursor-pointer select-none flex flex-col justify-between active:scale-[0.985] min-h-[165px] sm:min-h-[220px] ${
-        isBusy
-          ? isTennis
-            ? 'bg-gradient-to-b from-sky-950/50 to-[#0f172a] border-sky-500/80 shadow-lg shadow-sky-950/30 ring-1 ring-sky-500/40'
-            : 'bg-gradient-to-b from-emerald-950/50 to-[#0f172a] border-emerald-500/80 shadow-lg shadow-emerald-950/30 ring-1 ring-emerald-500/40'
-          : 'bg-[#0f172a] border-slate-800 hover:border-slate-750 hover:bg-slate-900/80 shadow-xs'
+      className={`relative rounded-2xl sm:rounded-3xl p-3 sm:p-5 transition-all duration-300 cursor-pointer select-none flex flex-col justify-between active:scale-[0.98] overflow-hidden ${
+        isTennis
+          ? isBusy
+            ? 'bg-gradient-to-b from-[#1e40af] to-[#0f172a] border-2 border-blue-400/80 shadow-[0_10px_30px_rgba(37,99,235,0.35),inset_0_3px_14px_rgba(0,0,0,0.8)] ring-2 ring-blue-500/50'
+            : 'bg-gradient-to-b from-[#172554] to-[#0b1329] border-2 border-blue-900/80 hover:border-blue-700 shadow-[0_8px_20px_rgba(0,0,0,0.5),inset_0_3px_14px_rgba(0,0,0,0.85)] hover:shadow-[0_10px_25px_rgba(30,58,138,0.3)]'
+          : isBusy
+            ? 'bg-gradient-to-b from-[#065f46] to-[#06241b] border-2 border-emerald-400/80 shadow-[0_10px_30px_rgba(16,185,129,0.35),inset_0_3px_14px_rgba(0,0,0,0.8)] ring-2 ring-emerald-500/50'
+            : 'bg-gradient-to-b from-[#064e3b] to-[#041f17] border-2 border-emerald-950/90 hover:border-emerald-800 shadow-[0_8px_20px_rgba(0,0,0,0.5),inset_0_3px_14px_rgba(0,0,0,0.85)] hover:shadow-[0_10px_25px_rgba(6,78,59,0.3)]'
       }`}
     >
-      {/* 1. Sarlavha va Holat */}
-      <div>
-        <div className="flex items-center justify-between gap-1.5 mb-2 sm:mb-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-lg sm:text-2xl shrink-0">{isTennis ? '🏓' : '🎱'}</span>
+      {/* Tennis Stoli O'rta Chizig'i (Oq chiziq) */}
+      {isTennis && (
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-white/20 pointer-events-none" />
+      )}
+
+      {/* Bilyard Burchak Luzalari (Pockets) */}
+      {!isTennis && (
+        <>
+          <div className="absolute top-1.5 left-1.5 w-3.5 h-3.5 rounded-full bg-black/70 border border-emerald-900/60 shadow-inner" />
+          <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-black/70 border border-emerald-900/60 shadow-inner" />
+          <div className="absolute bottom-1.5 left-1.5 w-3.5 h-3.5 rounded-full bg-black/70 border border-emerald-900/60 shadow-inner" />
+          <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-black/70 border border-emerald-900/60 shadow-inner" />
+        </>
+      )}
+
+      {/* 1. Yuqori qism: Stol Nomi va Holati */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between gap-1 mb-2 sm:mb-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="text-xl sm:text-2xl drop-shadow-md">
+              {isTennis ? '🏓' : '🎱'}
+            </span>
             <div className="truncate">
-              <h3 className="font-bold text-xs sm:text-base lg:text-lg text-white truncate leading-tight">
+              <h3 className="font-extrabold text-xs sm:text-base lg:text-lg text-white truncate drop-shadow-sm tracking-tight leading-tight">
                 {table.name}
               </h3>
-              <span className="text-[10px] sm:text-xs text-slate-400 hidden sm:block">
-                {isTennis ? 'Stol tennisi' : 'Bilyard'}
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-200/80 drop-shadow-xs hidden sm:block">
+                {isTennis ? 'Tennis Stoli' : 'Bilyard Movuti'}
               </span>
             </div>
           </div>
 
-          {/* Holat Nuqtasi */}
+          {/* Holat nishoni */}
           <span
-            className={`shrink-0 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold ${
+            className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black shadow-md ${
               isBusy
                 ? isTennis
-                  ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                : 'bg-slate-800 text-slate-400 border border-slate-700/60'
+                  ? 'bg-blue-400 text-slate-950'
+                  : 'bg-emerald-400 text-slate-950'
+                : 'bg-black/50 text-slate-300 border border-white/10 backdrop-blur-xs'
             }`}
           >
             {isBusy && (
-              <span
-                className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full animate-pulse ${
-                  isTennis ? 'bg-sky-400' : 'bg-emerald-400'
-                }`}
-              />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />
             )}
-            {isBusy ? 'Band' : 'Bo\'sh'}
+            {isBusy ? 'O\'YINDA' : 'BO\'SH'}
           </span>
         </div>
 
-        {/* 2. Markaz: Jonli Taymer yoki Soatlik Stavka */}
+        {/* 2. Markaz: Jonli Taymer va Pul (Bilyard/Tennis Movutida) */}
         {isBusy && calc && table.currentSession ? (
-          <div className="my-1.5 sm:my-3 py-2 sm:py-3.5 px-2 sm:px-3 rounded-lg sm:rounded-xl bg-slate-950/90 border border-slate-800 text-center">
-            {/* Katta Taymer */}
-            <div className="font-mono text-lg sm:text-2xl lg:text-3xl font-black text-white tracking-wider">
+          <div className="my-2 sm:my-3 py-2.5 sm:py-4 px-2 sm:px-3 rounded-xl sm:rounded-2xl bg-black/60 backdrop-blur-md border border-white/15 text-center shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]">
+            {/* Katta o'qiladigan Jonli Taymer */}
+            <div className="font-mono text-lg sm:text-2xl lg:text-3xl font-black text-white tracking-widest drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
               {formatDuration(calc.durationSeconds)}
             </div>
 
             {/* Har soniya yangilanuvchi Pul */}
-            <div className="flex items-center justify-between mt-1 sm:mt-2.5 pt-1 sm:pt-2 border-t border-slate-800/80 text-[11px] sm:text-xs">
-              <span className="text-slate-400 font-mono text-[10px] sm:text-xs">
+            <div className="flex items-center justify-between mt-1.5 sm:mt-2.5 pt-1.5 sm:pt-2 border-t border-white/10 text-[11px] sm:text-xs">
+              <span className="text-slate-300 font-mono text-[10px] sm:text-xs font-semibold">
                 {formatTime(table.currentSession.startTime)} dan
               </span>
               <span
-                className={`font-mono font-black text-xs sm:text-base lg:text-lg ${
-                  isTennis ? 'text-sky-300' : 'text-emerald-400'
+                className={`font-mono font-black text-xs sm:text-base lg:text-lg drop-shadow-md ${
+                  isTennis ? 'text-blue-300' : 'text-emerald-300'
                 }`}
               >
                 {formatMoney(calc.livePrice)}
@@ -117,17 +133,17 @@ export const TableCard: React.FC<TableCardProps> = ({
             </div>
           </div>
         ) : (
-          <div className="my-1.5 sm:my-3 py-3 sm:py-6 px-2 rounded-lg sm:rounded-xl bg-slate-950/40 border border-slate-800/60 text-center">
-            <span className="text-xs sm:text-base font-bold text-slate-200 font-mono block">
+          <div className="my-2 sm:my-3 py-3 sm:py-6 px-2 rounded-xl sm:rounded-2xl bg-black/35 backdrop-blur-xs border border-white/10 text-center shadow-[inset_0_2px_6px_rgba(0,0,0,0.5)]">
+            <span className="text-xs sm:text-base font-extrabold text-white font-mono block drop-shadow-xs">
               {formatMoney(rate)}
             </span>
-            <span className="text-[10px] sm:text-xs text-slate-400">soatlik stavka</span>
+            <span className="text-[10px] sm:text-xs text-slate-300 font-medium">soatlik stavka</span>
           </div>
         )}
       </div>
 
-      {/* 3. Harakat Tugmasi */}
-      <div className="mt-1.5 sm:mt-3">
+      {/* 3. Pastki Harakat Tugmasi */}
+      <div className="relative z-10 mt-1 sm:mt-2">
         {isBusy ? (
           <button
             type="button"
@@ -135,14 +151,14 @@ export const TableCard: React.FC<TableCardProps> = ({
               e.stopPropagation();
               onOpenSessionModal(table);
             }}
-            className={`w-full h-9 sm:h-12 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 text-white transition-all active:scale-95 cursor-pointer shadow-md ${
+            className={`w-full h-10 sm:h-12 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 text-white transition-all active:scale-95 cursor-pointer shadow-lg ${
               isTennis
-                ? 'bg-sky-600 hover:bg-sky-500'
-                : 'bg-emerald-600 hover:bg-emerald-500'
+                ? 'bg-blue-500 hover:bg-blue-400 shadow-blue-900/50'
+                : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-emerald-950/50'
             }`}
           >
-            <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            Hisoblash
+            <Receipt className="w-4 h-4" />
+            HISOBLASH
           </button>
         ) : (
           <button
@@ -151,10 +167,10 @@ export const TableCard: React.FC<TableCardProps> = ({
               e.stopPropagation();
               onStart(table.id);
             }}
-            className="w-full h-9 sm:h-12 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 transition-all active:scale-95 cursor-pointer"
+            className="w-full h-10 sm:h-12 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-black/60 hover:bg-black/80 active:bg-black text-white border border-white/20 transition-all active:scale-95 cursor-pointer shadow-md"
           >
-            <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-            Boshlash
+            <Play className="w-3.5 h-3.5 fill-current" />
+            BOSHLASH
           </button>
         )}
       </div>
