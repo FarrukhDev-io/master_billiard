@@ -16,7 +16,7 @@ describe('App Integration tests', () => {
     expect(screen.getByText('Tennis')).toBeDefined();
   });
 
-  it('allows starting a table and stops it with checkout flow and checks history tab', () => {
+  it('allows starting a table and stops it with checkout flow, displays receipt slip and updates history', () => {
     render(<App />);
 
     // 1-stol bo'sh holatda
@@ -40,6 +40,14 @@ describe('App Integration tests', () => {
     // Modal ichidagi to'lovni qabul qilish tugmasini bosish
     const modalFinishButtons = screen.getAllByRole('button', { name: /TO'LOVNI QABUL QILISH VA BO'SHATISH/i });
     fireEvent.click(modalFinishButtons[0]);
+
+    // Elektron Chek (Receipt Slip) ekranda paydo bo'ldi
+    expect(screen.getByText(/To'lov Qabul Qilindi/i)).toBeDefined();
+    expect(screen.getByText(/JAMI TO'LOV:/i)).toBeDefined();
+
+    // Chekni yopish
+    const closeReceiptButton = screen.getByRole('button', { name: /TAYYOR \(YOPISH\)/i });
+    fireEvent.click(closeReceiptButton);
 
     // Stol qayta bo'shadi
     const renewedStartButtons = screen.getAllByRole('button', { name: /BOSHLASH/i });

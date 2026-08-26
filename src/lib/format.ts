@@ -81,6 +81,18 @@ export function formatTime(timestamp: number): string {
 }
 
 /**
+ * Timestamp (ms) ni "DD.MM.YYYY" formatiga o'tkazadi
+ */
+export function formatDateUz(timestamp: number): string {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+/**
  * Timestamp (ms) ni to'liq sana va vaqt formatiga o'tkazadi
  * Masalan: "25-avgust, 14:30"
  */

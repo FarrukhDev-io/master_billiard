@@ -7,12 +7,13 @@ import { RevenueSummary } from './components/RevenueSummary';
 import { TableGrid } from './components/TableGrid';
 import { SessionLog } from './components/SessionLog';
 import { SessionModal } from './components/SessionModal';
+import { ReceiptModal } from './components/ReceiptModal';
 import { SettingsView } from './components/SettingsView';
 import { BottomNav, type ActiveTab } from './components/BottomNav';
-import type { Table } from './types';
+import type { Table, CompletedSession } from './types';
 
 /**
- * Master Billiard - 100% Full-Screen Lounge Display
+ * Master Billiard - 100% Full-Screen Lounge Display with Instant Receipts
  */
 export function App() {
   const { settings, updateSettings, resetSettings } = useSettings();
@@ -32,6 +33,10 @@ export function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('tables');
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
+
+  // Yakunlangan o'yin cheki holati
+  const [lastReceipt, setLastReceipt] = useState<CompletedSession | null>(null);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   // Birinchi bosishda to'liq ekranga (auto full-screen) o'tish
   useEffect(() => {
@@ -60,6 +65,14 @@ export function App() {
     setSelectedTable(null);
   };
 
+  const handleFinishAndShowReceipt = (tableId: string) => {
+    const completed = finishSession(tableId);
+    if (completed) {
+      setLastReceipt(completed);
+      setIsReceiptOpen(true);
+    }
+  };
+
   const currentModalTable = selectedTable
     ? tables.find((t) => t.id === selectedTable.id) || null
     : null;
@@ -75,7 +88,7 @@ export function App() {
         completedCount={todaySessions.length}
       />
 
-      {/* Asosiy Ish Maydoni (Katta monitorda 100% balandlikni to'ldiradi) */}
+      {/* Asosiy Ish Maydoni */}
       <main className="flex-1 w-full max-w-[1920px] mx-auto px-2.5 sm:px-4 lg:px-6 py-2 sm:py-3.5 flex flex-col min-h-0">
         {/* 1-SAHIFA: FAQAT STOLLAR (MONITOR BALANDLIGIGA TO'LIQ 100% CHO'ZILADI) */}
         {activeTab === 'tables' && (
@@ -131,8 +144,15 @@ export function App() {
         currentTime={currentTime}
         isOpen={isSessionModalOpen}
         onClose={handleCloseSessionModal}
-        onFinish={finishSession}
+        onFinish={handleFinishAndShowReceipt}
         onCancelSession={cancelSession}
+      />
+
+      {/* To'lovdan so'ng chiqadigan Tayyor Chek Modali */}
+      <ReceiptModal
+        receipt={lastReceipt}
+        isOpen={isReceiptOpen}
+        onClose={() => setIsReceiptOpen(false)}
       />
 
       {/* Pastki Navigatsiya Paneli (Faqat mobilda ko'rinadi) */}

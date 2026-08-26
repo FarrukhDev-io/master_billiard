@@ -37,50 +37,39 @@ export function useTables(settings: ClubSettings) {
 
   // Stol sessiyasini to'xtatish va hisoblab bo'shatish
   const finishSession = useCallback((tableId: string): CompletedSession | null => {
-    let completedSessionResult: CompletedSession | null = null;
     const currentNow = Date.now();
+    const targetTable = tables.find((t) => t.id === tableId);
+    if (!targetTable || targetTable.status !== 'busy' || !targetTable.currentSession) {
+      return null;
+    }
 
+    const active = targetTable.currentSession;
+    const rate = active.hourlyRate || getHourlyRate(targetTable.type, settings);
+    const details = calculateSessionDetails(
+      active.startTime,
+      currentNow,
+      rate,
+      settings.roundingMinutes
+    );
+
+    const uniqueCompletedId = `comp_${targetTable.id}_${currentNow}_${Math.random().toString(36).substring(2, 8)}`;
+
+    const completed: CompletedSession = {
+      id: uniqueCompletedId,
+      tableId: targetTable.id,
+      tableName: targetTable.name,
+      tableType: targetTable.type,
+      startTime: active.startTime,
+      endTime: currentNow,
+      durationSeconds: details.durationSeconds,
+      roundedMinutes: details.roundedMinutes,
+      hourlyRate: rate,
+      totalPrice: details.totalPrice,
+      dateKey: getTodayDateKey(),
+    };
+
+    // Stolni bo'shatish
     setTablesState((prevTables) => {
-      const targetTable = prevTables.find((t) => t.id === tableId);
-      if (!targetTable || targetTable.status !== 'busy' || !targetTable.currentSession) {
-        return prevTables;
-      }
-
-      const active = targetTable.currentSession;
-      const rate = active.hourlyRate || getHourlyRate(targetTable.type, settings);
-      const details = calculateSessionDetails(
-        active.startTime,
-        currentNow,
-        rate,
-        settings.roundingMinutes
-      );
-
-      const uniqueCompletedId = `comp_${targetTable.id}_${currentNow}_${Math.random().toString(36).substring(2, 8)}`;
-
-      const completed: CompletedSession = {
-        id: uniqueCompletedId,
-        tableId: targetTable.id,
-        tableName: targetTable.name,
-        tableType: targetTable.type,
-        startTime: active.startTime,
-        endTime: currentNow,
-        durationSeconds: details.durationSeconds,
-        roundedMinutes: details.roundedMinutes,
-        hourlyRate: rate,
-        totalPrice: details.totalPrice,
-        dateKey: getTodayDateKey(),
-      };
-
-      completedSessionResult = completed;
-
-      // Sessiyalar tarixiga qo'shish
-      setSessionsState((prevSessions) => {
-        const nextSessions = [completed, ...prevSessions];
-        storage.setSessions(nextSessions);
-        return nextSessions;
-      });
-
-      // Stolni bo'shatish
       const nextTables = prevTables.map((t) => {
         if (t.id === tableId) {
           return {
@@ -91,13 +80,19 @@ export function useTables(settings: ClubSettings) {
         }
         return t;
       });
-
       storage.setTables(nextTables);
       return nextTables;
     });
 
-    return completedSessionResult;
-  }, [settings]);
+    // Sessiyalar tarixiga qo'shish
+    setSessionsState((prevSessions) => {
+      const nextSessions = [completed, ...prevSessions];
+      storage.setSessions(nextSessions);
+      return nextSessions;
+    });
+
+    return completed;
+  }, [tables, settings]);
 
   // Sessiyani bekor qilish (adashib bosilganda to'lovsiz bo'shatish)
   const cancelSession = useCallback((tableId: string) => {
@@ -150,7 +145,7 @@ export function useTables(settings: ClubSettings) {
     return tables.filter((t) => t.status === 'busy').length;
   }, [tables]);
 
-  // Tarixni tozalash (agar kerak bo'lsa)
+  // Tarixni tozalash
   const clearTodayHistory = useCallback(() => {
     setSessionsState((prev) => {
       const filtered = prev.filter((s) => s.dateKey !== todayDateKey);
