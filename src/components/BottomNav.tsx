@@ -11,10 +11,7 @@ interface BottomNavProps {
 }
 
 /**
- * Pastki Navigatsiya Paneli (Bottom Navigation Bar)
- * 1. Stollar (Asosiy zal - faqat 5 ta stol)
- * 2. Kassa & Tarix (Bugungi tushum va cheklar)
- * 3. Sozlamalar (Narxlar va yaxlitlash)
+ * Pastki Navigatsiya Paneli (Faqat Mobil uchun, Desktopda yashiriladi)
  */
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
@@ -23,7 +20,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   completedCount,
 }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#080c10]/95 backdrop-blur-lg border-t border-slate-800/90 py-1.5 px-4 safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#080c10]/95 backdrop-blur-lg border-t border-slate-800/90 py-1.5 px-4 safe-area-bottom md:hidden">
       <div className="max-w-md mx-auto grid grid-cols-3 gap-1">
         {/* 1. Stollar */}
         <button
