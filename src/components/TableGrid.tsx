@@ -11,9 +11,10 @@ interface TableGridProps {
 }
 
 /**
- * Mobile 2-Column & Desktop 3-Column Responsive Grid
- * Mobilda: grid-cols-2
- * Desktopda: grid-cols-3 (Har bir stol katta va keng formatda)
+ * Mobile 2-Column & Desktop Hall Monitor 5-Column Full-Height Grid
+ * - Mobilda: 2 ustunli ixcham mobil layout (grid-cols-2)
+ * - Planshetda: 3 ustunli (sm:grid-cols-3)
+ * - Katta Zal Monitorida: 5 ta gigant stollar butun ekranni to'liq egallaydi (lg:grid-cols-5 h-full)
  */
 export const TableGrid: React.FC<TableGridProps> = ({
   tables,
@@ -23,7 +24,7 @@ export const TableGrid: React.FC<TableGridProps> = ({
   onOpenSessionModal,
 }) => {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4 lg:gap-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4 lg:gap-4 xl:gap-6 h-full items-stretch">
       {tables.map((table) => (
         <TableCard
           key={table.id}

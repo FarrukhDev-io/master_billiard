@@ -12,7 +12,7 @@ import { BottomNav, type ActiveTab } from './components/BottomNav';
 import type { Table } from './types';
 
 /**
- * Master Billiard - Authentic Table Hall & Auto-Fullscreen POS
+ * Master Billiard - Hall Monitor & Mobile POS
  */
 export function App() {
   const { settings, updateSettings, resetSettings } = useSettings();
@@ -65,7 +65,7 @@ export function App() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#080c10] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 pb-20 md:pb-8">
+    <div className="min-h-screen bg-[#080c10] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 pb-20 md:pb-4">
       {/* Yuqori Panel */}
       <Header
         currentTime={currentTime}
@@ -75,11 +75,11 @@ export function App() {
         completedCount={todaySessions.length}
       />
 
-      {/* Asosiy Ish Maydoni */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-3 sm:py-6">
-        {/* 1-SAHIFA: FAQAT STOLLAR (KLUB ZALI) */}
+      {/* Asosiy Ish Maydoni (Katta monitorda to'liq 100% bo'sh joy qoldirmaydi) */}
+      <main className="flex-1 w-full max-w-[1920px] mx-auto px-2.5 sm:px-4 lg:px-6 py-2 sm:py-3.5 flex flex-col">
+        {/* 1-SAHIFA: FAQAT STOLLAR (MONITORGA FULL EKRAN) */}
         {activeTab === 'tables' && (
-          <section aria-label="Klub zali stollari" className="animate-fade-in space-y-3 sm:space-y-4">
+          <section aria-label="Klub zali stollari" className="flex-1 w-full flex flex-col min-h-[calc(100vh-100px)] lg:h-[calc(100vh-100px)] animate-fade-in">
             <TableGrid
               tables={tables}
               settings={settings}
@@ -92,7 +92,7 @@ export function App() {
 
         {/* 2-SAHIFA: KASSA VA TARIX */}
         {activeTab === 'history' && (
-          <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto animate-fade-in">
+          <div className="space-y-4 sm:space-y-6 max-w-4xl w-full mx-auto animate-fade-in py-2">
             <section aria-label="Hisobot paneli">
               <RevenueSummary
                 todayRevenue={todayRevenue}
@@ -113,7 +113,7 @@ export function App() {
 
         {/* 3-SAHIFA: SOZLAMALAR */}
         {activeTab === 'settings' && (
-          <section aria-label="Sozlamalar paneli" className="max-w-xl mx-auto animate-fade-in">
+          <section aria-label="Sozlamalar paneli" className="max-w-xl w-full mx-auto animate-fade-in py-2">
             <SettingsView
               settings={settings}
               onSave={updateSettings}
